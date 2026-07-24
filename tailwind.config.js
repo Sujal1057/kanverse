@@ -9,17 +9,17 @@ module.exports = {
     extend: {
       colors: {
         kanverse: {
-          bg: "#FAF9F5",
-          card: "#F4F2EB",
-          text: "#1C1B1A",
-          muted: "#75736E",
-          subtle: "#9E9C96",
-          border: "#EAE6DF",
-          accent: "#2D2A26",
+          bg: "#EBE9E1",
+          text: "#33312E",
+          muted: "#6A675F",
+          subtle: "#A39F97",
+          border: "#D1CEC4",
+          accent: "#4A463F",
+          card: "#E5E2D9",
         },
       },
       fontFamily: {
-        serif: ["var(--font-cormorant)", "Cormorant Garamond", "Georgia", "serif"],
+        serif: ["var(--font-serif)"],
         sans: ["var(--font-inter)", "Inter", "-apple-system", "sans-serif"],
       },
       letterSpacing: {

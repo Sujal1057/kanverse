@@ -4,14 +4,14 @@
 
 @layer base {
   :root {
-    --bg-kanverse: #FAF9F5;
-    --text-kanverse: #1C1B1A;
+    --bg-kanverse: #EBE9E1;
+    --text-kanverse: #33312E;
   }
 
   html {
     scroll-behavior: smooth;
-    background-color: #FAF9F5;
-    color: #1C1B1A;
+    background-color: #EBE9E1;
+    color: #33312E;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "kern" 1, "liga" 1;

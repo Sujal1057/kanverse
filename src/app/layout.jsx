@@ -1,10 +1,10 @@
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 
-const cormorant = Cormorant_Garamond({
+const serif = Playfair_Display({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-cormorant",
+  weight: ["400", "500", "600"],
+  variable: "--font-serif",
   display: "swap",
 });
 
@@ -23,8 +23,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
-      <body className="bg-kanverse-bg text-kanverse-text font-sans selection:bg-kanverse-text selection:text-kanverse-bg min-h-screen antialiased">
+    <html lang="en">
+      <body
+        className={`${serif.variable} ${inter.variable} font-sans antialiased bg-kanverse-bg text-kanverse-text selection:bg-kanverse-text selection:text-kanverse-bg min-h-screen`}
+      >
         {children}
       </body>
     </html>
