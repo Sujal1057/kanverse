@@ -126,11 +126,11 @@ export const PhotoGallery = ({ animationDelay = 0.5 }) => {
       <p className="lg:text-md my-2 text-center text-xs font-light uppercase tracking-widest text-black/50">
         Crafted with intention, delivered with elegance
       </p>
-      <h3 className="z-20 mx-auto max-w-2xl justify-center text-black py-3 text-center text-4xl font-serif tracking-tight md:text-7xl">
-        Your Celebration,{" "}
-        <span className="italic text-black/70">Reimagined</span>
+      <h3 className="z-20 mx-auto max-w-4xl justify-center text-black py-2 text-center text-4xl font-serif tracking-tight md:text-5xl lg:text-6xl">
+        Every Celebration Deserves a{" "}
+        <span className="italic text-black/70">Beautiful Digital Experience.</span>
       </h3>
-      <div className="relative mb-8 h-[350px] w-full items-center justify-center lg:flex">
+      <div className="relative mb-4 h-[320px] w-full items-center justify-center lg:flex">
         <motion.div
           className="relative mx-auto flex w-full max-w-7xl justify-center"
           initial={{ opacity: 0 }}

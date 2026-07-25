@@ -95,7 +95,7 @@ export default function Page() {
       >
 
         {/* Hero: Photo Gallery */}
-        <section className="min-h-screen flex flex-col justify-between pt-0 pb-8 px-6">
+        <section className="min-h-screen flex flex-col justify-between pt-24 pb-8 px-6">
           <div className="flex-1 flex flex-col justify-center items-center">
             {introComplete && (
               <PhotoGallery animationDelay={0.3} />
