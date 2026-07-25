@@ -127,7 +127,7 @@ export default function InquiryModal({ isOpen, onClose }) {
 
                 <button
                   type="submit"
-                  className="w-full sm:w-auto px-7 py-3.5 bg-kanverse-text text-[#FAF9F5] text-[12px] uppercase tracking-[0.15em] font-medium hover:bg-kanverse-accent transition-colors duration-300"
+                  className="w-full sm:w-auto px-7 py-3.5 bg-kanverse-text text-white text-[12px] uppercase tracking-[0.15em] font-medium hover:bg-kanverse-accent transition-colors duration-300"
                 >
                   Send Request
                 </button>

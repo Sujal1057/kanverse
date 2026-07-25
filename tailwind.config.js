@@ -9,13 +9,13 @@ module.exports = {
     extend: {
       colors: {
         kanverse: {
-          bg: "#EBE9E1",
+          bg: "#FFFFFF",
           text: "#33312E",
           muted: "#6A675F",
           subtle: "#A39F97",
-          border: "#D1CEC4",
+          border: "#E5E5E5",
           accent: "#4A463F",
-          card: "#E5E2D9",
+          card: "#F5F5F5",
         },
       },
       fontFamily: {
