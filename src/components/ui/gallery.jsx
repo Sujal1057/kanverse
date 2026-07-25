@@ -10,6 +10,14 @@ import { Button } from "@/components/ui/button";
 export const PhotoGallery = ({ animationDelay = 0.5 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     // First make the container visible with a fade-in
@@ -71,7 +79,7 @@ export const PhotoGallery = ({ animationDelay = 0.5 }) => {
     {
       id: 1,
       order: 0,
-      x: "-320px",
+      x: isMobile ? "-110px" : "-320px",
       y: "15px",
       zIndex: 50,
       direction: "left",
@@ -80,7 +88,7 @@ export const PhotoGallery = ({ animationDelay = 0.5 }) => {
     {
       id: 2,
       order: 1,
-      x: "-160px",
+      x: isMobile ? "-55px" : "-160px",
       y: "32px",
       zIndex: 40,
       direction: "left",
@@ -98,7 +106,7 @@ export const PhotoGallery = ({ animationDelay = 0.5 }) => {
     {
       id: 4,
       order: 3,
-      x: "160px",
+      x: isMobile ? "55px" : "160px",
       y: "22px",
       zIndex: 20,
       direction: "right",
@@ -107,7 +115,7 @@ export const PhotoGallery = ({ animationDelay = 0.5 }) => {
     {
       id: 5,
       order: 4,
-      x: "320px",
+      x: isMobile ? "110px" : "320px",
       y: "44px",
       zIndex: 10,
       direction: "left",
@@ -171,7 +179,7 @@ export const PhotoGallery = ({ animationDelay = 0.5 }) => {
         </motion.div>
       </div>
       <div className="flex w-full justify-center">
-        <Button className="bg-[#166534] text-white hover:bg-[#166534]/90 text-[11px] uppercase tracking-[0.15em] px-7 py-5 rounded-none">
+        <Button className="bg-[#166534]/20 backdrop-blur-xl border border-[#166534]/30 shadow-[0_8px_32px_rgba(22,101,52,0.15)] text-[#166534] hover:bg-[#166534]/30 text-[11px] uppercase tracking-[0.15em] px-8 py-6 rounded-full transition-all duration-300">
           Explore Collections
         </Button>
       </div>

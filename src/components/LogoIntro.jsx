@@ -142,21 +142,24 @@ export default function LogoIntro({ onComplete }) {
       logoWrapper,
       {
         scale: () => {
-          const navLogoEl = document.getElementById("navbar-logo");
+          const navLogos = Array.from(document.querySelectorAll("#navbar-logo"));
+          const navLogoEl = navLogos.find(el => el.getBoundingClientRect().width > 0);
           if (!navLogoEl) return 0.22;
           const navRect = navLogoEl.getBoundingClientRect();
           const wrapperRect = logoWrapper.getBoundingClientRect();
           return Math.max(navRect.height / wrapperRect.height, 0.18);
         },
         x: () => {
-          const navLogoEl = document.getElementById("navbar-logo");
+          const navLogos = Array.from(document.querySelectorAll("#navbar-logo"));
+          const navLogoEl = navLogos.find(el => el.getBoundingClientRect().width > 0);
           if (!navLogoEl) return 0;
           const navRect = navLogoEl.getBoundingClientRect();
           // We know the wrapper is perfectly centered in viewport
           return navRect.left + navRect.width / 2 - window.innerWidth / 2;
         },
         y: () => {
-          const navLogoEl = document.getElementById("navbar-logo");
+          const navLogos = Array.from(document.querySelectorAll("#navbar-logo"));
+          const navLogoEl = navLogos.find(el => el.getBoundingClientRect().width > 0);
           if (!navLogoEl) return -window.innerHeight * 0.42;
           const navRect = navLogoEl.getBoundingClientRect();
           return navRect.top + navRect.height / 2 - window.innerHeight / 2;

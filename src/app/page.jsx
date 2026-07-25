@@ -7,6 +7,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import InquiryModal from "../components/InquiryModal";
 import LogoIntro from "../components/LogoIntro";
 import { PhotoGallery } from "@/components/ui/gallery";
+import { Layers, Star } from 'lucide-react';
+import { NavBar } from "@/components/ui/tubelight-navbar";
+import CollectionSurfer from "@/components/ui/collection-surfer";
+import FaqSection from "@/components/ui/faq";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -44,7 +48,7 @@ export default function Page() {
     let ctx = gsap.context(() => {
       const texts = gsap.utils.toArray('.story-text');
       const images = gsap.utils.toArray('.story-image');
-      
+
       if (!texts.length || !images.length) return;
 
       // Initial state: hide everything except first slide
@@ -52,31 +56,31 @@ export default function Page() {
       gsap.set(images.slice(1), { autoAlpha: 0 });
       gsap.set(texts[0], { autoAlpha: 1, y: 0 });
       gsap.set(images[0], { autoAlpha: 1 });
-      
+
       let currentIdx = 0;
       let currentTween = null;
-      
+
       function goToSlide(index, direction) {
         if (index === currentIdx) return;
-        
+
         if (currentTween) currentTween.kill();
-        
+
         const tl = gsap.timeline();
         currentTween = tl;
-        
+
         // fade out current
         tl.to(texts[currentIdx], { autoAlpha: 0, y: direction > 0 ? -30 : 30, duration: 0.5, ease: "power2.inOut" }, 0)
           .to(images[currentIdx], { autoAlpha: 0, duration: 0.5, ease: "power2.inOut" }, 0)
-        // fade in next
+          // fade in next
           .fromTo(texts[index], { autoAlpha: 0, y: direction > 0 ? 30 : -30 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.inOut" }, 0)
           .fromTo(images[index], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "power2.inOut" }, 0);
-          
+
         currentIdx = index;
       }
 
       ScrollTrigger.create({
         trigger: section2Ref.current,
-        start: "top top",
+        start: "bottom bottom",
         end: `+=${storySlides.length * 100}%`,
         pin: true,
         snap: {
@@ -93,7 +97,7 @@ export default function Page() {
         }
       });
     }, section2Ref);
-    
+
     return () => ctx.revert();
   }, []);
 
@@ -106,6 +110,11 @@ export default function Page() {
 
   const handleIntroComplete = () => {
     setIntroComplete(true);
+    // The Hero Gallery conditionally renders when intro completes, causing a massive layout shift.
+    // We MUST force GSAP to recalculate the pin trigger positions, otherwise Section 2 pins late!
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 500);
   };
 
   return (
@@ -113,56 +122,42 @@ export default function Page() {
       {/* Logo Intro Animation */}
       <LogoIntro onComplete={handleIntroComplete} />
 
-      {/* Navbar — always in DOM so intro can target #navbar-logo for position calc */}
-      <nav
-        className="fixed top-0 left-0 w-full z-50 px-6 py-5 flex justify-between items-center border-b border-black/10"
+      {/* Navbar Wrapper */}
+      <div
+        className="transition-opacity duration-500 delay-100 z-[999]"
         style={{
-          backgroundColor: introComplete ? "rgba(255,255,255,0.85)" : "transparent",
-          backdropFilter: introComplete ? "blur(12px)" : "none",
-          WebkitBackdropFilter: introComplete ? "blur(12px)" : "none",
-          borderColor: introComplete ? "rgba(51,49,46,0.1)" : "transparent",
-          transition: "background-color 0.6s ease, border-color 0.6s ease, backdrop-filter 0.6s ease",
+          opacity: introComplete ? 1 : 0,
         }}
       >
-        <div
-          className="flex gap-8 text-[11px] uppercase tracking-[0.15em]"
-          style={{
-            opacity: introComplete ? 1 : 0,
-            transition: "opacity 0.5s ease 0.1s",
-          }}
-        >
-          <a href="#" className="hover:opacity-50 transition-opacity">Collections</a>
-          <a href="#" className="hover:opacity-50 transition-opacity">Experience</a>
-        </div>
-        <div className="absolute left-1/2 -translate-x-1/2">
-          {/* Navbar logo — hidden initially, shown after intro animation lands */}
-          <div
-            id="navbar-logo"
-            style={{ opacity: 0 }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/kanverse-logo.svg"
-              alt="Kanverse"
-              style={{
-                height: "30px",
-                width: "auto",
-                display: "block",
-              }}
-              draggable={false}
-            />
-          </div>
-        </div>
-        <div
-          className="flex gap-8 text-[11px] uppercase tracking-[0.15em]"
-          style={{
-            opacity: introComplete ? 1 : 0,
-            transition: "opacity 0.5s ease 0.1s",
-          }}
-        >
-          <button onClick={() => setIsModalOpen(true)} className="hover:opacity-50 transition-opacity">Inquire</button>
-        </div>
-      </nav>
+        <NavBar
+          leftItems={[
+            { name: 'Collections', url: '#', icon: Layers },
+            { name: 'Experience', url: '#', icon: Star }
+          ]}
+          logo={
+            <div id="navbar-logo">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/kanverse-logo.svg"
+                alt="Kanverse"
+                style={{
+                  height: "26px",
+                  width: "auto",
+                  display: "block",
+                }}
+                draggable={false}
+              />
+            </div>
+          }
+          rightNode={
+            <button onClick={() => setIsModalOpen(true)} className="group relative overflow-hidden pb-1 ml-2 md:ml-4 pointer-events-auto">
+              <span className="text-[11px] uppercase tracking-[0.2em] relative z-10 font-medium text-black">Action</span>
+              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#166534] origin-left scale-x-100 group-hover:scale-x-0 transition-transform duration-700 ease-[0.16,1,0.3,1]" />
+              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#166534] origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-[0.16,1,0.3,1] delay-100" />
+            </button>
+          }
+        />
+      </div>
 
       <main
         ref={containerRef}
@@ -195,18 +190,18 @@ export default function Page() {
         </section>
 
         {/* Editorial Split Section (MPI style layout) */}
-        <section ref={section2Ref} className="h-screen w-full relative bg-white">
-          <div className="h-full w-full flex items-center px-6">
-            <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-              
+        <section ref={section2Ref} className="h-auto lg:min-h-[100dvh] flex flex-col w-full relative bg-white pt-12 pb-0 md:pt-0 md:pb-0">
+          <div className="w-full flex items-center px-6">
+            <div className="max-w-6xl mx-auto w-full h-full flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-24 pt-8 md:pt-0 pb-0 lg:items-center">
+
               {/* Left text block */}
-              <div className="flex flex-col justify-center relative h-[350px]">
+              <div className="flex-none lg:flex-auto flex flex-col justify-center relative h-[180px] md:h-[350px] w-full mt-4 lg:mt-0">
                 {storySlides.map((slide, index) => (
                   <div key={slide.id} className="story-text absolute inset-0 flex flex-col justify-center pointer-events-none">
-                    <h2 className="font-serif text-[40px] leading-[1.1] tracking-tighter mb-8 pointer-events-auto">
+                    <h2 className="font-serif text-[28px] md:text-[40px] leading-[1.1] tracking-tighter mb-4 md:mb-8 pointer-events-auto">
                       {slide.heading}
                     </h2>
-                    <p className="text-[13px] leading-[1.8] text-black/70 mb-12 pointer-events-auto">
+                    <p className="text-[12px] md:text-[13px] leading-[1.8] text-black/70 mb-8 md:mb-12 pointer-events-auto">
                       {slide.description}
                     </p>
                     <button onClick={() => setIsModalOpen(true)} className="group relative inline-flex overflow-hidden pb-1 self-start pointer-events-auto">
@@ -219,8 +214,8 @@ export default function Page() {
               </div>
 
               {/* Right side - Phone Mockup */}
-              <div className="flex justify-center items-center">
-                <div className="relative w-full max-w-[320px] aspect-[9/19] mx-auto">
+              <div className="w-full flex justify-center items-end lg:items-center min-h-0 mt-8 lg:mt-0 translate-y-1 lg:translate-y-0">
+                <div className="relative h-full lg:h-auto max-h-[60vh] lg:max-h-none w-auto max-w-[240px] lg:w-full lg:max-w-[320px] aspect-[9/19] mx-auto">
                   {/* Screen content (behind the transparent phone frame) */}
                   <div className="absolute top-[4%] bottom-[4%] left-[6%] right-[6%] overflow-hidden rounded-[3rem] z-0 bg-black/5 scale-[0.95]">
                     {storySlides.map((slide, index) => (
@@ -244,21 +239,18 @@ export default function Page() {
           </div>
         </section>
 
-        {/* Full width divider image */}
-        <section className="py-24">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 2 }}
-            className="w-full h-[60vh] md:h-[80vh]"
-          >
-            <img src="https://images.unsplash.com/photo-1464349153735-7db50ed83c84?auto=format&fit=crop&q=80&w=2000" alt="Detail" className="w-full h-full object-cover grayscale-[20%]" />
-          </motion.div>
-        </section>
+        {/* Collection Surfer Section */}
+        <div className="px-4 md:px-8 mt-[5vh]">
+          <CollectionSurfer variant="magnetic" />
+        </div>
+
+        {/* Premium FAQ Section */}
+        <div className="-mt-[20vh] md:-mt-[10vh] relative z-20 bg-white">
+          <FaqSection />
+        </div>
 
         {/* Massive Dark Footer (MPI Signature) */}
-        <footer className="bg-[#1A1918] text-white pt-32 pb-8 px-6 rounded-t-[3rem] mt-24">
+        <footer className="bg-[#1A1918] text-white pt-32 pb-8 px-6 rounded-t-[3rem] relative z-20">
           <div className="max-w-7xl mx-auto flex flex-col items-center">
             <h2 className="font-serif text-[12vw] leading-[0.85] tracking-tighter text-center mb-16">
               Let's begin.
