@@ -1,10 +1,38 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useLayoutEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import InquiryModal from "../components/InquiryModal";
 import LogoIntro from "../components/LogoIntro";
 import { PhotoGallery } from "@/components/ui/gallery";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const storySlides = [
+  {
+    id: 1,
+    heading: "We believe your celebration begins the moment the invitation is opened.",
+    description: "Rejecting the rigid, template-driven approach to digital invitations, we craft bespoke online experiences. Typography, motion, and white space are meticulously balanced to reflect the tone of your day.",
+    cta: "Discover our process",
+    image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=900"
+  },
+  {
+    id: 2,
+    heading: "A seamless experience across all devices.",
+    description: "Your guests will experience a flawless, immersive journey whether they are on their phone, tablet, or desktop. Every interaction is designed to feel native and premium.",
+    cta: "View capabilities",
+    image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=900"
+  },
+  {
+    id: 3,
+    heading: "RSVPs and details handled with elegance.",
+    description: "Forget clunky forms. Our custom RSVP flows integrate perfectly with your design, making it a joy for your guests to confirm their attendance and view itinerary details.",
+    cta: "See an example",
+    image: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?auto=format&fit=crop&q=80&w=900"
+  }
+];
 
 export default function Page() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,15 +40,62 @@ export default function Page() {
   const containerRef = useRef(null);
   const section2Ref = useRef(null);
 
-  const { scrollYProgress: section2Scroll } = useScroll({
-    target: section2Ref,
-    offset: ["start start", "end end"]
-  });
+  useLayoutEffect(() => {
+    let ctx = gsap.context(() => {
+      const texts = gsap.utils.toArray('.story-text');
+      const images = gsap.utils.toArray('.story-image');
+      
+      if (!texts.length || !images.length) return;
 
-  // Crossfade opacities for the 3 photos inside the phone screen
-  const img1Opacity = useTransform(section2Scroll, [0, 0.33, 0.5], [1, 1, 0]);
-  const img2Opacity = useTransform(section2Scroll, [0.33, 0.5, 0.66, 0.83], [0, 1, 1, 0]);
-  const img3Opacity = useTransform(section2Scroll, [0.66, 0.83, 1], [0, 1, 1]);
+      // Initial state: hide everything except first slide
+      gsap.set(texts.slice(1), { autoAlpha: 0, y: 30 });
+      gsap.set(images.slice(1), { autoAlpha: 0 });
+      gsap.set(texts[0], { autoAlpha: 1, y: 0 });
+      gsap.set(images[0], { autoAlpha: 1 });
+      
+      let currentIdx = 0;
+      let currentTween = null;
+      
+      function goToSlide(index, direction) {
+        if (index === currentIdx) return;
+        
+        if (currentTween) currentTween.kill();
+        
+        const tl = gsap.timeline();
+        currentTween = tl;
+        
+        // fade out current
+        tl.to(texts[currentIdx], { autoAlpha: 0, y: direction > 0 ? -30 : 30, duration: 0.5, ease: "power2.inOut" }, 0)
+          .to(images[currentIdx], { autoAlpha: 0, duration: 0.5, ease: "power2.inOut" }, 0)
+        // fade in next
+          .fromTo(texts[index], { autoAlpha: 0, y: direction > 0 ? 30 : -30 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.inOut" }, 0)
+          .fromTo(images[index], { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "power2.inOut" }, 0);
+          
+        currentIdx = index;
+      }
+
+      ScrollTrigger.create({
+        trigger: section2Ref.current,
+        start: "top top",
+        end: `+=${storySlides.length * 100}%`,
+        pin: true,
+        snap: {
+          snapTo: storySlides.length > 1 ? 1 / (storySlides.length - 1) : 0,
+          duration: { min: 0.3, max: 0.6 },
+          ease: "power2.inOut"
+        },
+        onUpdate: (self) => {
+          // Determine the closest slide based on scroll progress
+          const index = Math.round(self.progress * (storySlides.length - 1));
+          if (index !== currentIdx) {
+            goToSlide(index, index > currentIdx ? 1 : -1);
+          }
+        }
+      });
+    }, section2Ref);
+    
+    return () => ctx.revert();
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -120,59 +195,54 @@ export default function Page() {
         </section>
 
         {/* Editorial Split Section (MPI style layout) */}
-        <section ref={section2Ref} className="h-[300vh]">
-          <div className="sticky top-0 h-screen w-full flex items-center px-6">
+        <section ref={section2Ref} className="h-screen w-full relative bg-white">
+          <div className="h-full w-full flex items-center px-6">
             <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+              
               {/* Left text block */}
-              <div className="flex flex-col justify-center">
-                <h2 className="font-serif text-[40px] leading-[1.1] tracking-tighter mb-8">
-                  We believe your celebration begins the moment the invitation is opened.
-                </h2>
-                <p className="text-[13px] leading-[1.8] text-black/70 mb-12">
-                  Rejecting the rigid, template-driven approach to digital invitations, we craft bespoke online experiences. Typography, motion, and white space are meticulously balanced to reflect the tone of your day.
-                </p>
-                <button onClick={() => setIsModalOpen(true)} className="group relative inline-flex overflow-hidden pb-1 self-start">
-                  <span className="text-[11px] uppercase tracking-[0.2em] relative z-10">Discover our process</span>
-                  <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#166534] origin-left scale-x-100 group-hover:scale-x-0 transition-transform duration-700 ease-[0.16,1,0.3,1]" />
-                  <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#166534] origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-[0.16,1,0.3,1] delay-100" />
-                </button>
+              <div className="flex flex-col justify-center relative h-[350px]">
+                {storySlides.map((slide, index) => (
+                  <div key={slide.id} className="story-text absolute inset-0 flex flex-col justify-center pointer-events-none">
+                    <h2 className="font-serif text-[40px] leading-[1.1] tracking-tighter mb-8 pointer-events-auto">
+                      {slide.heading}
+                    </h2>
+                    <p className="text-[13px] leading-[1.8] text-black/70 mb-12 pointer-events-auto">
+                      {slide.description}
+                    </p>
+                    <button onClick={() => setIsModalOpen(true)} className="group relative inline-flex overflow-hidden pb-1 self-start pointer-events-auto">
+                      <span className="text-[11px] uppercase tracking-[0.2em] relative z-10">{slide.cta}</span>
+                      <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#166534] origin-left scale-x-100 group-hover:scale-x-0 transition-transform duration-700 ease-[0.16,1,0.3,1]" />
+                      <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#166534] origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-[0.16,1,0.3,1] delay-100" />
+                    </button>
+                  </div>
+                ))}
               </div>
 
               {/* Right side - Phone Mockup */}
               <div className="flex justify-center items-center">
                 <div className="relative w-full max-w-[320px] aspect-[9/19] mx-auto">
-                {/* Screen content (behind the transparent phone frame) */}
-                <div className="absolute top-[4%] bottom-[4%] left-[6%] right-[6%] overflow-hidden rounded-[3rem] z-0 bg-black/5 scale-[0.95]">
-                  <motion.img
-                    style={{ opacity: img1Opacity }}
-                    src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=900"
-                    alt="Screen 1"
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  <motion.img
-                    style={{ opacity: img2Opacity }}
-                    src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=900"
-                    alt="Screen 2"
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  <motion.img
-                    style={{ opacity: img3Opacity }}
-                    src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?auto=format&fit=crop&q=80&w=900"
-                    alt="Screen 3"
-                    className="absolute inset-0 w-full h-full object-cover"
+                  {/* Screen content (behind the transparent phone frame) */}
+                  <div className="absolute top-[4%] bottom-[4%] left-[6%] right-[6%] overflow-hidden rounded-[3rem] z-0 bg-black/5 scale-[0.95]">
+                    {storySlides.map((slide, index) => (
+                      <img
+                        key={slide.id}
+                        src={slide.image}
+                        alt={`Screen ${index + 1}`}
+                        className="story-image absolute inset-0 w-full h-full object-cover"
+                      />
+                    ))}
+                  </div>
+                  {/* Transparent Phone Frame */}
+                  <img
+                    src="/phone.png"
+                    alt="Phone Display"
+                    className="relative w-full h-full object-contain pointer-events-none z-10"
                   />
                 </div>
-                {/* Transparent Phone Frame */}
-                <img
-                  src="/phone.png"
-                  alt="Phone Display"
-                  className="relative w-full h-full object-contain pointer-events-none z-10"
-                />
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
         {/* Full width divider image */}
         <section className="py-24">
