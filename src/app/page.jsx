@@ -11,6 +11,8 @@ import { Layers, Star } from 'lucide-react';
 import { NavBar } from "@/components/ui/tubelight-navbar";
 import CollectionSurfer from "@/components/ui/collection-surfer";
 import FaqSection from "@/components/ui/faq";
+import FeaturesSection from "@/components/ui/features";
+import HeroCollageDemo from "@/components/ui/modern-hero-demo";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -161,7 +163,7 @@ export default function Page() {
 
       <main
         ref={containerRef}
-        className="bg-white text-black selection:bg-[#166534] selection:text-white min-h-screen font-sans"
+        className="bg-white text-black selection:bg-[#166534] selection:text-white min-h-screen font-sans overflow-x-clip"
       >
 
         {/* Hero: Photo Gallery */}
@@ -244,10 +246,18 @@ export default function Page() {
           <CollectionSurfer variant="magnetic" />
         </div>
 
-        {/* Premium FAQ Section */}
+        {/* Premium Features Section */}
         <div className="-mt-[20vh] md:-mt-[10vh] relative z-20 bg-white">
+          <FeaturesSection />
+        </div>
+
+        {/* Premium FAQ Section */}
+        <div className="relative z-20 bg-white">
           <FaqSection />
         </div>
+
+        {/* User Requested: Modern Hero Section Demo */}
+        <HeroCollageDemo />
 
         {/* Massive Dark Footer (MPI Signature) */}
         <footer className="bg-[#1A1918] text-white pt-32 pb-8 px-6 rounded-t-[3rem] relative z-20">
