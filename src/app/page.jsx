@@ -7,7 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import InquiryModal from "../components/InquiryModal";
 import LogoIntro from "../components/LogoIntro";
 import { PhotoGallery } from "@/components/ui/gallery";
-import { Layers, Star } from 'lucide-react';
+import { Layers, Star, Sparkles, Smartphone, HeartHandshake } from 'lucide-react';
 import { NavBar } from "@/components/ui/tubelight-navbar";
 import CollectionSurfer from "@/components/ui/collection-surfer";
 import FaqSection from "@/components/ui/faq";
@@ -242,7 +242,7 @@ export default function Page() {
         </section>
 
         {/* Collection Surfer Section */}
-        <div className="px-4 md:px-8 mt-[5vh]">
+        <div id="collections" className="px-4 md:px-8 mt-[5vh]">
           <CollectionSurfer variant="magnetic" />
         </div>
 
@@ -256,23 +256,61 @@ export default function Page() {
           <FaqSection />
         </div>
 
-        {/* User Requested: Modern Hero Section Demo */}
-        <HeroCollageDemo />
+        {/* User Requested: Modern Hero Section Demo (Sticky Parallax Reveal) */}
+        <div className="sticky top-0 z-10 bg-white w-full">
+          <HeroCollageDemo />
+        </div>
 
         {/* Massive Dark Footer (MPI Signature) */}
-        <footer className="bg-[#1A1918] text-white pt-32 pb-8 px-6 rounded-t-[3rem] relative z-20">
-          <div className="max-w-7xl mx-auto flex flex-col items-center">
-            <h2 className="font-serif text-[12vw] leading-[0.85] tracking-tighter text-center mb-16">
-              Let's begin.
+        <footer className="bg-[#1A1918] text-white pt-24 md:pt-32 pb-8 px-6 rounded-t-[3rem] relative z-20">
+          <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
+            
+            <span className="text-[11px] uppercase tracking-[0.2em] font-medium text-white/50 mb-6">
+              Ready to Begin?
+            </span>
+            
+            <h2 className="font-serif text-[10vw] md:text-6xl lg:text-7xl leading-[0.9] tracking-tighter text-white mb-6 md:mb-8">
+              Let's Create Something They'll Never Forget.
             </h2>
+            
+            <p className="text-sm md:text-base text-white/70 max-w-2xl leading-relaxed mb-12 font-sans">
+              Whether you're planning a wedding, celebrating a birthday, launching a special event, or bringing a completely unique idea to life, KANVERSE is here to transform your vision into a beautiful digital experience. Let's create something meaningful together.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-10 mb-20">
+              <button onClick={() => setIsModalOpen(true)} className="px-8 py-4 bg-white text-black text-[12px] uppercase tracking-[0.15em] hover:bg-white/90 transition-colors w-full sm:w-auto">
+                Start Your Project
+              </button>
+              
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("collections")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="group relative overflow-hidden pb-1 text-[12px] uppercase tracking-[0.15em] text-white w-full sm:w-auto"
+              >
+                <span className="relative z-10">Explore Our Collections</span>
+                <span className="absolute bottom-0 left-0 w-full h-[1px] bg-white/30 origin-left scale-x-100 group-hover:scale-x-0 transition-transform duration-700 ease-[0.16,1,0.3,1]" />
+                <span className="absolute bottom-0 left-0 w-full h-[1px] bg-white origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-[0.16,1,0.3,1] delay-100" />
+              </button>
+            </div>
+            
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 w-full pt-10 md:pt-12 border-t border-white/10 mb-16">
+              <div className="flex items-center gap-3">
+                <Sparkles strokeWidth={1.5} size={16} className="text-white/70" />
+                <span className="text-[12px] md:text-sm text-white/70">Personalized for Every Occasion</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Smartphone strokeWidth={1.5} size={16} className="text-white/70" />
+                <span className="text-[12px] md:text-sm text-white/70">Mobile-First Experience</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <HeartHandshake strokeWidth={1.5} size={16} className="text-white/70" />
+                <span className="text-[12px] md:text-sm text-white/70">Dedicated Support Throughout</span>
+              </div>
+            </div>
 
-            <button onClick={() => setIsModalOpen(true)} className="group relative inline-flex overflow-hidden pb-1 mb-32">
-              <span className="text-[12px] uppercase tracking-[0.2em] relative z-10 text-white">Inquire Now</span>
-              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-white origin-left scale-x-100 group-hover:scale-x-0 transition-transform duration-700 ease-[0.16,1,0.3,1]" />
-              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-white origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-[0.16,1,0.3,1] delay-100" />
-            </button>
-
-            <div className="w-full flex justify-between items-end text-[11px] uppercase tracking-[0.2em] border-t border-white/10 pt-8">
+            <div className="w-full flex justify-between items-end text-[11px] uppercase tracking-[0.2em] border-t border-white/10 pt-8 mt-auto">
               <span className="opacity-50">© 2026 Kanverse</span>
               <div className="flex gap-8">
                 <a href="#" className="hover:opacity-50 transition-opacity">Instagram</a>
